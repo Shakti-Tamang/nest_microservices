@@ -9,3 +9,6 @@ bootstrap();
 
 
 // nest generate app shakti-service
+
+
+//  docker run --name mongod mongo:latest
