@@ -4,7 +4,9 @@ import { RiderCoordinatorService } from './rider-coordinator.service';
 
 @Controller('rider-coordinator')
 export class RiderCoordinatorController {
-  constructor(private readonly riderCoordinatorService:RiderCoordinatorService) {}
+  constructor(
+    private readonly riderCoordinatorService: RiderCoordinatorService,
+  ) {}
 
   @Get()
   getUser(): string {
@@ -13,5 +15,10 @@ export class RiderCoordinatorController {
   @Post()
   async saveRiders(@Body() dto: RiderCoordinatorDto) {
     return await this.riderCoordinatorService.saveDetails(dto);
+  }
+
+  @Get('/getAll')
+  async getAllDeatils() {
+    return await this.riderCoordinatorService.getAll();
   }
 }
