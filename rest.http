@@ -1,2 +1,12 @@
 ###GET RIDER COORDINATES
 GET http://localhost:3001/rider-coordinator
+
+###POST RIDER COORDINATES
+POST http://localhost:3001/rider-coordinator
+Content-Type: application/json
+
+ {
+    "lan":62353,
+    "lat":123,
+    "ride":"shakti"
+ }
