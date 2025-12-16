@@ -1,24 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { RiderCoordinator, RiderCoordinatorDocument } from './schemas/rider-coordinator.schemas';
+import {
+  RiderCoordinator,
+  RiderCoordinatorDocument,
+} from './schemas/rider-coordinator.schemas';
 import { Model } from 'mongoose';
 import { RiderCoordinatorDto } from './dto/rider-coordinator.dto';
 
 @Injectable()
 export class RiderCoordinatorService {
+  constructor(
+    @InjectModel(RiderCoordinator.name)
+    private readonly riderModel: Model<RiderCoordinatorDocument>,
+  ) {}
 
-constructor(@InjectModel(RiderCoordinator.name) private readonly riderModel:Model<RiderCoordinatorDocument>){
+  async saveDetails(dto: RiderCoordinatorDto) {
+    const createdUser = new this.riderModel(dto);
 
-}
-
-
-async saveDetails(dto:RiderCoordinatorDto){
-
- const createdUser = new this.riderModel(dto);
+    return createdUser.save();
+  }
 
 
- return createdUser.save();
+  async  getAll(){
+    const data=await this.riderModel.find().exec();
 
-}
 
+    return{
+
+        userData:data,
+
+        message:"successfully fetched data"
+    }
+  }
 }

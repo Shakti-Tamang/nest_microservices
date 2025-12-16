@@ -1,5 +1,5 @@
 ###GET RIDER COORDINATES
-GET http://localhost:3001/rider-coordinator
+GET http://localhost:3001/rider-coordinator/getAll
 
 ###POST RIDER COORDINATES
 POST http://localhost:3001/rider-coordinator
