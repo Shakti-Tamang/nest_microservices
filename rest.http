@@ -2,7 +2,7 @@
 GET http://localhost:3001/rider-coordinator/694247dedbac381987688df1
 
 ###POST RIDER COORDINATES
-POST http://localhost:3001/rider-coordinator
+POST http://localhost:3001/rider-coordinator/saveOrder
 Content-Type: application/json
 
  {

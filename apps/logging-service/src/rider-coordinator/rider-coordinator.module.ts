@@ -10,12 +10,16 @@ import {
   RiderCoordinatorSchema,
 } from './schemas/rider-coordinator.schemas';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ORDER_SERVICE_RABBITMQ } from './servicename/service-name';
+import { Order, orderCoordinatorSchema } from './schemas/order-coordinator.schemas';
 
-export const ORDER_SERVICE_RABBITMQ = 'rabbitMQ_order_service';
+
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: RiderCoordinator.name, schema: RiderCoordinatorSchema },
+      {name:Order.name,schema:orderCoordinatorSchema}
+
     ]),
 
     // for syncronous http

@@ -243,3 +243,7 @@ volumes:
 # If you want, I can make a small diagram showing Service A → RabbitMQ → 3 instances of Service B with messages being balanced.
 
 # Do you want me to draw it?
+
+
+
+# we need service registry in case of http communc action only
