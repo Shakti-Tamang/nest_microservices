@@ -7,6 +7,7 @@ import {
 import { Model } from 'mongoose';
 import { RiderCoordinatorDto } from './dto/rider-coordinator.dto';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class RiderCoordinatorService {
@@ -22,18 +23,19 @@ export class RiderCoordinatorService {
     return createdUser.save();
   }
 
-  async getAll() {
-    const data = await this.riderModel.find().exec();
+  async getAll(riderId: string) {
+    const data = await this.riderModel.find({ ride: riderId }).lean().exec();
 
-    // communicate with rider microservices by using rider id
+    const pattern = { cmd: 'get-rider' };
+    const payload = { id: riderId };
 
-    // communication can by happened by TCP,RabitMQ,Kafka,Nats
-
-    // use of messge broker
+    const rider = await firstValueFrom(
+      this.client.send<RiderResponse>(pattern, payload),
+    );
 
     return {
-      userData: data,
-
+      coordinatorData: data,
+      rider,
       message: 'successfully fetched data',
     };
   }
