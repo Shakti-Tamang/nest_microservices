@@ -1,6 +1,19 @@
 version: '3.1'
 
 services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: rms_backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Shakti
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c ssl=off
+    restart: always
+
   mongo:
     image: mongo
     restart: always
@@ -9,3 +22,224 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
       - "27017:27017"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"      # RabbitMQ messaging port (AMQP protocol)
+      - "15672:15672"    # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: always
+
+volumes:
+  postgres_data:
+
+# flow in rabbitMQ
+
+# producer send messages
+
+# consumers recives messages
+# Message are held in que
+# Exchange  rout messages 
+# routing key help with message targeting
+
+
+      # In simple terms, RabbitMQ is like a digital post office for applications: it's a message broker that receives messages (data) from one application (a producer) and stores them in a queue (like a mailbox) until another application (a consumer) picks them up and processes them, allowing apps to talk to each other without being directly connected, enabling asynchronous communication and decoupling services. 
+
+# 1️⃣ Decoupling
+
+# Problem without RabbitMQ: Service A calls Service B directly.
+
+# If Service B is down, Service A fails.
+
+# They are tightly coupled → changes in B may break A.
+
+# Solution with RabbitMQ:
+
+# Service A sends a message to a queue.
+
+# Service B reads messages from the queue whenever it’s ready.
+
+# Service A doesn’t care when or how B processes it.
+
+# ✅ This decouples the services.
+
+# 2️⃣ Scalability
+
+# Problem without RabbitMQ:
+
+# If Service B gets too many requests, it can crash.
+
+# Solution with RabbitMQ:
+
+# Messages are queued in RabbitMQ.
+
+# You can run multiple instances of Service B to consume messages concurrently.
+
+# This allows the system to handle more load without breaking.
+
+# ✅ Services can scale independently.
+
+# 3️⃣ Bonus Benefits
+
+# Reliable delivery: Messages are not lost (if queues are durable).
+
+# Asynchronous processing: Service A doesn’t have to wait for B → faster responses.
+
+# Flexible patterns: You can do pub/sub, fanout, delayed messages, etc.
+
+# Example in real life:
+
+# E-commerce:
+
+# Order service → sends a message to Payment queue.
+
+# Payment service → consumes from the queue.
+
+# Notification service → also consumes the same message to send emails.
+
+# All services work independently, can scale, and don’t block each other.
+
+# If you want, I can draw a small diagram showing RabbitMQ between microservices so it’s easier to visualize.
+
+# Do you want me to do that?
+
+      # let application talk to eachother 
+
+
+
+      # fault tolorence
+
+
+#       In microservices, fault tolerance simply means making sure your system keeps working even if one service fails.
+
+# Explanation in simple terms:
+
+# Imagine your app has multiple services: Payment, Orders, and Notification.
+
+# If the Notification service goes down, fault tolerance ensures that Payment and Orders still work.
+
+# Fault tolerance handles failures gracefully without crashing the entire system.
+
+# How it’s usually implemented:
+
+# Retries – Try again if a service call fails.
+
+# Timeouts – Don’t wait forever; fail fast if a service doesn’t respond.
+
+# Fallbacks – Provide default behavior when a service is down.
+
+# Circuit Breakers – Stop calling a failing service temporarily to avoid overwhelming it.
+
+# 💡 Simple analogy: Fault tolerance in microservices is like having backup routes or safety nets—if one bridge collapses, traffic can still flow via another bridge.
+
+
+# Here’s a simple explanation of how fault tolerance works in microservices:
+
+# Imagine a microservices system:
+
+# Services: Orders, Payment, Notification
+
+# Scenario: User places an order, which triggers payment and then a notification.
+
+# Without fault tolerance:
+
+# Orders service calls Payment service.
+
+# Payment service fails.
+
+# Orders service also fails → user sees an error.
+
+# With fault tolerance:
+
+# Retries: Orders service tries calling Payment service 2–3 times before giving up.
+
+# Timeouts: If Payment doesn’t respond in, say, 2 seconds, Orders service stops waiting.
+
+# Fallback: If Payment fails, Orders service can use a default behavior (like saving the order to retry later).
+
+# Circuit Breaker: If Payment keeps failing, Orders service stops calling it for a while to prevent overload, and returns a friendly message or logs it.
+
+# Step-by-step example:
+
+# User clicks “Pay Now”.
+
+# Orders service calls Payment service.
+
+# Payment service is slow → timeout triggers.
+
+# Orders service checks fallback → queues the payment to retry later.
+
+# Orders service continues → user can still place the order.
+
+#  Key idea: Fault tolerance doesn’t prevent failures—it manages failures gracefully so the rest of the system continues working.
+
+# If you want, I can draw a simple diagram showing this flow in microservices, which makes it very easy to visualize.
+
+# Do you want me to make that diagram?
+
+
+
+#LoadBalancinf:
+
+# 3️⃣ Load Balancing
+
+# RabbitMQ automatically balances messages across consumers.
+
+# Example: 3 instances of Service B consuming from a queue → messages are split among them.
+
+# If one instance goes down, others continue processing → fault tolerance.
+
+# ✅ Summary
+
+# Decoupled: Services communicate via RabbitMQ, not direct calls.
+
+# Scalable: Add more instances to consume messages in parallel.
+
+# Load balanced: RabbitMQ evenly distributes messages to available consumers.
+
+# If you want, I can draw a simple diagram showing Service A → RabbitMQ → multiple Service B instances with load balancing.
+
+# Do you want me to do that?
+
+# hwo loadbaling aome with decoupled
+
+# Here’s a simple explanation of how load balancing comes naturally with decoupled communication in microservices:
+
+# 1️⃣ Decoupled Communication
+
+# When services are decoupled, Service A does not call Service B directly.
+
+# Instead, Service A sends messages to a message broker (like RabbitMQ).
+
+# Service B (or multiple instances of it) subscribe to the messages.
+
+# Service A doesn’t care how many Service B instances exist or which one processes the message.
+
+# 2️⃣ Automatic Load Balancing
+
+# If there are multiple instances of Service B consuming from the same queue:
+
+# RabbitMQ delivers messages to all available instances.
+
+# Each instance processes some portion of the messages.
+
+# This means the workload is automatically shared without Service A doing anything.
+
+# 3️⃣ Why This Works
+
+# Decoupling allows multiple consumers to exist independently.
+
+# Message broker ensures messages are distributed.
+
+# Result: Load is naturally balanced across instances, even if Service A doesn’t know about them.
+
+# ✅ Key Idea:
+# Decoupling via RabbitMQ allows any number of service instances to consume messages in parallel, which automatically balances the load among them.
+
+# If you want, I can make a small diagram showing Service A → RabbitMQ → 3 instances of Service B with messages being balanced.
+
+# Do you want me to draw it?

@@ -7,6 +7,11 @@ async function bootstrap() {
 }
 bootstrap();
 
+// command to create nx monorepo
+// npx create-turbo@latest my-monorepo
+
+// PS C:\Users\Shakti\Desktop\BCA\microservciesnest\uberservice> npm install -g npm-check-updates
+
 
 // nest generate app shakti-service
 
