@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-export class RiderCoordinatorDto {
+export class OrderDto {
   @IsNotEmpty()
   lan: number;
 
