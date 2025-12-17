@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { RiderCoordinatorDto } from './dto/rider-coordinator.dto';
 import { RiderCoordinatorService } from './rider-coordinator.service';
 
@@ -17,8 +17,8 @@ export class RiderCoordinatorController {
     return await this.riderCoordinatorService.saveDetails(dto);
   }
 
-  @Get('/getAll')
-  async getAllDeatils() {
-    return await this.riderCoordinatorService.getAll();
+  @Get('/:id')
+  async getAllDeatils(@Param('id') id:string) {
+    return await this.riderCoordinatorService.getAll(id);
   }
 }
