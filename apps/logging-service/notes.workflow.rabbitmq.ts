@@ -342,3 +342,9 @@
 // How Uber/Netflix handle it
 
 // When to avoid API Gateway
+
+
+
+
+
+
