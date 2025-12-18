@@ -31,7 +31,7 @@ export class RiderCoordinatorService {
   }
 
   async saveOrder(dto: OrderDto) {
-    this.client.emit('order saved', dto);
+    this.client.emit('order-create', dto);;
     const createdUser = new this.orderModel(dto);
     return createdUser.save();
   }

@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { RiderServiceService } from './rider-service.service';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class RiderServiceController {
@@ -13,13 +13,19 @@ export class RiderServiceController {
 
   @MessagePattern({ cmd: 'get-rider' })
   // @Get()
- getRiderById(data: { id: string }) {
-  return {
-    _id: data.id,
-    firstname: 'shakti',
-    lastname: 'tamang',
-    email: 'tamanshakti423@gmail.com',
-  };
-}
+  getRiderById(data: { id: string }) {
+    return {
+      _id: data.id,
+      firstname: 'shakti',
+      lastname: 'tamang',
+      email: 'tamanshakti423@gmail.com',
+    };
+  }
 
+  // RabbitMQ
+  // routing key
+  @MessagePattern('order-create')
+  handleOrderCreation(@Payload() order: any) {
+    console.log('[Order-Service]:order received', order);
+  }
 }

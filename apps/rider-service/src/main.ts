@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { RiderServiceModule } from './rider-service.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
 
 // for syncronous http
 // async function bootstrap() {
@@ -19,7 +20,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 // }
 // bootstrap();
 
-
 async function bootstrap() {
   const app = await NestFactory.create(RiderServiceModule);
   const RABBITMQ_URL = 'amqp://guest:guest@localhost:5672';
@@ -30,11 +30,13 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [RABBITMQ_URL],
-      queue: 'riderservice_queue',
-      queueOptions: { durable: false },
+      queue: 'order_queue',
+      queueOptions: { durable: true },
     },
   });
 
   await microservice.listen();
+
+  Logger.log('Application  is listening on rabbitmq');
 }
 bootstrap();
