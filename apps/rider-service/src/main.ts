@@ -3,6 +3,8 @@ import { RiderServiceModule } from './rider-service.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 
+
+// GRPC is also example of the microservices
 // for syncronous http
 // async function bootstrap() {
 //   const microservice =
@@ -40,3 +42,4 @@ async function bootstrap() {
   Logger.log('Application  is listening on rabbitmq');
 }
 bootstrap();
+
